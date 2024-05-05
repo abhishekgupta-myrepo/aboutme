@@ -1,7 +1,7 @@
 
 
 
-![profile](media/pic.jpg){: .icon .left}
+![profile](media/pic.png){: .icon .left}
 
 
 

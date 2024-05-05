@@ -1,13 +1,14 @@
-site_name: Abhisek's Notes Repository 
+site_name: Abhishek Gupta Blog 
 
 theme:
     name: 'material'
+    #favicon: images/favicon.png
     palette:
 
     # Light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: pink
+      primary: indigo
       accent: indigo
       toggle:
         icon: material/toggle-switch-off-outline
@@ -16,7 +17,7 @@ theme:
     # Dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: pink
+      primary: indigo
       accent: blue
       toggle:
         icon: material/toggle-switch

@@ -40,8 +40,8 @@ id1 --> id5
 id9 -- production deployment --> id10
 
 ```
-## Step 1: Docker Desktop Installation on Windows
-- when installing docker desktop, download the docker for windows.
+## Docker Desktop Installation on Windows
+- When installing docker desktop, download the docker for windows.
 - This might require installation of an older version of WSL to run it on the desktop. This is done from Microsoft website.
 	- WSL stands for windows subsystem for Linux. Using this you are able to run a Linux environment in windows.
 	- [Manual installation steps for older versions of WSL | Microsoft Docs](https://docs.microsoft.com/en-us/windows/wsl/install-manual#step-4---download-the-linux-kernel-update-package)

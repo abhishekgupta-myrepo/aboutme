@@ -1,5 +1,6 @@
 # Docker Commands Cheat sheet
 ---
+## Get Docker Options on Bash 
 - Command below provides all the options available with Docker. All the docker commands start wit the word ==docker==
 ``` bash
 AGupta@vm2 MINGW64 ~ $ docker
@@ -19,7 +20,7 @@ Options:
 
 ```
 
-==Management Commands==
+## Management Commands
 
 Command | Description 
 ---| ---
@@ -39,8 +40,7 @@ system |Manage Docker
 trust |Manage trust on Docker images 
 volume| Manage volumes 
 
-==Commands==
-
+## Docker Commands
  Command | Description 
  --- | --- 
 attach| Attach local standard input, output, and error streams to a running container

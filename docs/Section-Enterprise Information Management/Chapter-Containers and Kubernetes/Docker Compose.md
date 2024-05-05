@@ -2,6 +2,7 @@
 Instructions below are based on following the directions provided during the course :  Docker for developers by Emmanuel Henri - [Docker for developers (linkedin.com)](https://www.linkedin.com/learning/docker-for-developers-14493163/docker-for-developers?autoplay=true&resume=false)
 
 ---
+## Step by Step Guide to Run Docker Compose
 - Follow the steps below to develop a full stack service comprising of multiple containers.
 - The instructions for developing a full stack are written the docker compose .yml file. Look at the sample project developed available at the GitHub  - [abhishekgupta-myrepo/docker_poc (github.com)](https://github.com/abhishekgupta-myrepo/docker_poc)
 - Once the docker compose file is written preform the following steps to create a service.

@@ -2,7 +2,7 @@
 Instructions below are based on following the directions provided during the course :  Docker for developers by Emmanuel Henri - [Docker for developers (linkedin.com)](https://www.linkedin.com/learning/docker-for-developers-14493163/docker-for-developers?autoplay=true&resume=false)
 
 ---
-
+## Step to Create Docker based Project
 Follow the below steps to setup a simple backend container based docker project.
 
 - **Step 1** - Create the Dockerfile. Refer to the GitHub project - [abhishekgupta-myrepo/docker_poc (github.com)](https://github.com/abhishekgupta-myrepo/docker_poc)

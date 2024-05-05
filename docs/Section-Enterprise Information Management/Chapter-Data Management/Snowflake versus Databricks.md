@@ -6,7 +6,7 @@ Modified: 2022-06-29 07:54:58 -0400
 
 ---
 
-![DATABRICKS ](media/snowflake_databricks_1.jpg)
+![DATABRICKS ](snowflake_databricks_1.jpg)
 
 
 

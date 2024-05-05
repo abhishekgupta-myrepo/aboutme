@@ -1,9 +1,12 @@
 # Simple Kubernetes Project
+## Kubernetes Background 
 - A Kubernetes cluster can be deployed and tested locally following the steps mentioned below - 
 	- This simplicity must not be confused with the actual complexity and the depth of the functionality that Kubernetes provides for running production clusters.
 	- Kubernetes is currently far and wide an industry standard. This is generally used for running 10000+ nodes clusters.
 	- It is now an open source project originally developed by google.
 	- Mesos is the nearest competitor that is used by many giants for running their production environment.
+
+## Steps to Run Kubernetes Cluster Locally
 - **Step 1** : Install Kubectl from the website for the local deployment of the cluster
 	- [Getting started | Kubernetes](https://kubernetes.io/docs/setup/)
 	![300](kubectl1.png)

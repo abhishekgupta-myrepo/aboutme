@@ -2,6 +2,7 @@
 Instructions below are based on following the directions provided during the course :  Docker for developers by Emmanuel Henri - [Docker for developers (linkedin.com)](https://www.linkedin.com/learning/docker-for-developers-14493163/docker-for-developers?autoplay=true&resume=false)
 
 ---
+## Docker Swarm Overview
 - Docker Swarm is a tool to manage cluster of nodes. Each node runs multiple containers. A node is a physical or a virtual machine on which multiple containers are run.
 - The swarm then provides the ability to load balance the nodes and manage multiple nodes within the clusters.
 
@@ -26,6 +27,8 @@ flowchart TB
 - On a local machine you can setup a single node swarm where the same node can be used for running the containers and the swarm to manage it.
 - On the servers each node that needs to be joined with the master must be joined and must have the docker installed. Once it is joined to the ==master node Swarm== it then takes care of deploying the containers on the nodes.
 - Docker swarm comes installed with docker desktop. 
+
+## Steps to Run Docker Swarm Cluster Locally
 Follow the below commands to run the docker swarm locally. This requires the == docker compose .yml== file that you can refer from the GitHub project @  - [abhishekgupta-myrepo/docker_poc (github.com)](https://github.com/abhishekgupta-myrepo/docker_poc)
 -  **Step 1** : Run the below command in PowerShell from Visual Studio code 
 ```bash

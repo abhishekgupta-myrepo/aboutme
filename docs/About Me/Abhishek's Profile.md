@@ -1,8 +1,5 @@
 
 
 
-![profile](media/pic.png){: .icon .left}
-
-
-
+![profile](media/pic.png) {: style="float: left; margin-right: 1em;"}
 

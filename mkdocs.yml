@@ -1,27 +1,19 @@
-site_name: Abhishek Gupta Blog 
-
+site_name: Abhishek Gupta 
 theme:
-    name: 'material'
-    #favicon: images/favicon.png
-    palette:
-
-    # Light mode
-    - media: "(prefers-color-scheme: light)"
-      scheme: default
-      primary: indigo
-      accent: indigo
-      toggle:
-        icon: material/toggle-switch-off-outline
-        name: Switch to dark mode
-
-    # Dark mode
-    - media: "(prefers-color-scheme: dark)"
-      scheme: slate
-      primary: indigo
-      accent: blue
-      toggle:
-        icon: material/toggle-switch
-        name: Switch to light mode
+  name: material
+  palette:
+    scheme: preference
+    #primary: purple
+  features:
+    - navigation.top
+    - navigation.tabs
+    - navigation.expand
+    - search.share
+    - content.tabs.link
+  #icon:
+    #repo: fontawesome/brands/github
+  #logo: media/pic.jpeg
+  #favicon: media/pic.jpeg
 
 # Extensions
 markdown_extensions:
@@ -30,9 +22,9 @@ markdown_extensions:
   # - attr_list
   - pymdownx.arithmatex:
       generic: true
-  # - pymdownx.superfences
-  # - pymdownx.details
-  # - pymdownx.magiclink
+  - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.magiclink
   - pymdownx.tasklist:
       custom_checkbox: true
   - def_list
@@ -41,17 +33,44 @@ markdown_extensions:
   - pymdownx.keys
   - pymdownx.mark
   - pymdownx.tilde
-
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - admonition
+  - pymdownx.tabbed
+  - pymdownx.highlight:
+      linenums: true
+  - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.snippets:
+      base_path: '.'
+      check_paths: true
+  - meta
   - toc:
       permalink: true
+      toc_depth: 4
+  - attr_list
 
 plugins:
   - search
   - roamlinks 
   - mermaid2
+  - git-revision-date-localized
+  - tags
+  - mkdocs-video
+
+
+copyright: Copyright &copy; 2024 abhishekgupta
+
+extra_css:
+  - stylesheets/extra.css
+
 
 extra_javascript:
   - javascripts/mathjax.js
   - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
   - https://unpkg.com/mermaid/dist/mermaid.min.js 
+  - javascript/insights.js
+
+repo_url: https://github.com/abhishekgupta-myrepo/aboutme.git

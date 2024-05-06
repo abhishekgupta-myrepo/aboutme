@@ -1,6 +1,5 @@
-# Table of Contents
+# Home
 
-[[Abhishek's Profile]]
 ## Section-Artificial Intelligence
 ## Section-Enterprise Information Management
 ### Chapter-Data Management

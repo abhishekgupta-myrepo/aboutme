@@ -56,7 +56,7 @@ plugins:
   - mkdocs-roamlinks-plugin 
   - mkdocs-mermaid2-plugin
   - mkdocs-git-revision-date-localized-plugin
-  - tags
+  - mkdocs-plugin-tags
   - mkdocs-video
 
 

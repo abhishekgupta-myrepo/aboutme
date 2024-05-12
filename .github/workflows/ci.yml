@@ -13,7 +13,7 @@ jobs:
         with:
           python-version: 3.10.5
       - run: pip install mkdocs-material
-      - run: pip install Jinja2==3.1.0
+      - run: pip install Jinja2==3.0.3
       - run: pip install mkdocs-roamlinks-plugin
       - run: pip install mkdocs-mermaid2-plugin
       - run: pip install mkdocs-video

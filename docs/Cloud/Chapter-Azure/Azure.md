@@ -1,1 +1,1 @@
-1. 
+1. Introduce to Azure compute.

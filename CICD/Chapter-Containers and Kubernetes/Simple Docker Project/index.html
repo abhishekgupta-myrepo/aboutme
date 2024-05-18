@@ -1,0 +1,776 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<link href="../Kubernetes/" rel="prev"/>
+<link href="../../../Cloud/Chapter-Azure/Azure/" rel="next"/>
+<link href="../../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.0, mkdocs-material-9.5.21" name="generator"/>
+<title>Compile simple project in docker - Abhishek Gupta</title>
+<link href="../../../assets/stylesheets/main.66ac8b77.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/palette.06af60db.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<link href="../../../stylesheets/extra.css" rel="stylesheet"/>
+<script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="preference" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#compile-simple-project-in-docker">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="Abhishek Gupta" class="md-header__button md-logo" data-md-component="logo" href="../../.." title="Abhishek Gupta">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            Abhishek Gupta
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Compile simple project in docker
+            
+          </span>
+</div>
+</div>
+</div>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"></path></svg>
+</button>
+</nav>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/abhishekgupta-myrepo/aboutme.git" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../..">
+        
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../Abhishek/About%20me/">
+          
+  
+  Abhishek
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../Artificial%20Intelligence/Generative%20AI%20with%20Large%20Language%20Models/">
+          
+  
+  Artificial Intelligence
+
+        </a>
+</li>
+<li class="md-tabs__item md-tabs__item--active">
+<a class="md-tabs__link" href="../About%20Docker/">
+          
+  
+  CICD
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../Cloud/Chapter-Azure/Azure/">
+          
+  
+  Cloud
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../Data%20Management/Chapter-Data%20Management/Snowflake%20versus%20Databricks/">
+          
+  
+  Data Management
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../Healthcare/Prior%20Authorization%20Interoperability%20CME%20Rule/">
+          
+  
+  Healthcare
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../IT%20Architecture/Digital%20Signatures/">
+          
+  
+  IT Architecture
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../Leadership/10%20Key%20Qualities%20of%20a%20Successful%20Manager/">
+          
+  
+  Leadership
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../Software%20Tools/Git/">
+          
+  
+  Software Tools
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Abhishek Gupta" class="md-nav__button md-logo" data-md-component="logo" href="../../.." title="Abhishek Gupta">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"></path></svg>
+</a>
+    Abhishek Gupta
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/abhishekgupta-myrepo/aboutme.git" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../..">
+<span class="md-ellipsis">
+    Home
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Abhishek
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_2_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_2">
+<span class="md-nav__icon md-icon"></span>
+            Abhishek
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../Abhishek/About%20me/">
+<span class="md-ellipsis">
+    About me
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+<span class="md-ellipsis">
+    Artificial Intelligence
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_3">
+<span class="md-nav__icon md-icon"></span>
+            Artificial Intelligence
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../Artificial%20Intelligence/Generative%20AI%20with%20Large%20Language%20Models/">
+<span class="md-ellipsis">
+    Generative AI with Large Language Models
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../Artificial%20Intelligence/Job%20Description%20of%20a%20Prompt%20Engineer/">
+<span class="md-ellipsis">
+    Job Description of a Prompt Engineer
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+<span class="md-ellipsis">
+    CICD
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            CICD
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_4_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_1" id="__nav_4_1_label" tabindex="0">
+<span class="md-ellipsis">
+    Chapter Containers and Kubernetes
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_4_1_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_1">
+<span class="md-nav__icon md-icon"></span>
+            Chapter Containers and Kubernetes
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../About%20Docker/">
+<span class="md-ellipsis">
+    Docker Notes
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../CI%20with%20Travis/">
+<span class="md-ellipsis">
+    Travis based Continuous Integration
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../Docker%20Compose/">
+<span class="md-ellipsis">
+    Docker Compose
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../Docker-Commands/">
+<span class="md-ellipsis">
+    Docker Commands Cheat sheet
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../Docker-Swarm/">
+<span class="md-ellipsis">
+    Introduction to Swarm
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../Kubernetes/">
+<span class="md-ellipsis">
+    Simple Kubernetes Project
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    Compile simple project in docker
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    Compile simple project in docker
+  </span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#step-to-create-docker-based-project">
+<span class="md-ellipsis">
+      Step to Create Docker based Project
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+<span class="md-ellipsis">
+    Cloud
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            Cloud
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_5_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5_1" id="__nav_5_1_label" tabindex="0">
+<span class="md-ellipsis">
+    Chapter Azure
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_1_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_5_1">
+<span class="md-nav__icon md-icon"></span>
+            Chapter Azure
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../Cloud/Chapter-Azure/Azure/">
+<span class="md-ellipsis">
+    Azure
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+<span class="md-ellipsis">
+    Data Management
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            Data Management
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_6_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_1" id="__nav_6_1_label" tabindex="0">
+<span class="md-ellipsis">
+    Chapter Data Management
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_1_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_6_1">
+<span class="md-nav__icon md-icon"></span>
+            Chapter Data Management
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../Data%20Management/Chapter-Data%20Management/Snowflake%20versus%20Databricks/">
+<span class="md-ellipsis">
+    Snowflake Vs. Databricks
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+<span class="md-ellipsis">
+    Healthcare
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            Healthcare
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../Healthcare/Prior%20Authorization%20Interoperability%20CME%20Rule/">
+<span class="md-ellipsis">
+    Prior Authorization Interoperability CME Rule
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+<span class="md-ellipsis">
+    IT Architecture
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            IT Architecture
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../IT%20Architecture/Digital%20Signatures/">
+<span class="md-ellipsis">
+    Digital Signatures
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+<span class="md-ellipsis">
+    Leadership
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_9_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_9">
+<span class="md-nav__icon md-icon"></span>
+            Leadership
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../Leadership/10%20Key%20Qualities%20of%20a%20Successful%20Manager/">
+<span class="md-ellipsis">
+    10 Key Qualities of a Successful Manager
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_10" type="checkbox"/>
+<label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+<span class="md-ellipsis">
+    Software Tools
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_10_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_10">
+<span class="md-nav__icon md-icon"></span>
+            Software Tools
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../Software%20Tools/Git/">
+<span class="md-ellipsis">
+    Git
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#step-to-create-docker-based-project">
+<span class="md-ellipsis">
+      Step to Create Docker based Project
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<div><h1 id="compile-simple-project-in-docker">Compile simple project in docker<a class="headerlink" href="#compile-simple-project-in-docker" title="Permanent link">¶</a></h1>
+<p>Instructions below are based on following the directions provided during the course :  Docker for developers by Emmanuel Henri - <a href="https://www.linkedin.com/learning/docker-for-developers-14493163/docker-for-developers?autoplay=true&amp;resume=false">Docker for developers (linkedin.com)</a></p>
+<hr/>
+<h2 id="step-to-create-docker-based-project">Step to Create Docker based Project<a class="headerlink" href="#step-to-create-docker-based-project" title="Permanent link">¶</a></h2>
+<p>Follow the below steps to setup a simple backend container based docker project.</p>
+<ul>
+<li><strong>Step 1</strong> - Create the Dockerfile. Refer to the GitHub project - <a href="https://github.com/abhishekgupta-myrepo/docker_poc">abhishekgupta-myrepo/docker_poc (github.com)</a><ul>
+<li>The backend project in within the /app folder in the git project.</li>
+<li>To run and compile the docker image, go to the app folder in the Visual studio code PowerShell terminal to type in the commands below - </li>
+<li>Before you run the commands make sure you have the docker desktop installed. Follow the steps mentioned in <a href="../About%20Docker/">About Docker</a></li>
+<li>Make sure you have installed the VS code extension as it helps in suggesting the commands when writing Dockerfile.</li>
+<li>All the commands are uppercase</li>
+</ul>
+</li>
+<li><strong>Step 2</strong> - Run the docker command to build the image - 
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span></pre></div></td><td class="code"><div><pre><span></span><code>PS<span class="w"> </span>C:<span class="se">\U</span>sers<span class="se">\a</span>bhis<span class="se">\P</span>rojects<span class="se">\d</span>ocker_poc&gt;<span class="w"> </span>docker<span class="w"> </span>--version
+Docker<span class="w"> </span>version<span class="w"> </span><span class="m">20</span>.10.17,<span class="w"> </span>build<span class="w"> </span>100c701
+
+PS<span class="w"> </span>C:<span class="se">\U</span>sers<span class="se">\a</span>bhis<span class="se">\P</span>rojects<span class="se">\d</span>ocker_poc&gt;<span class="w"> </span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>simplebackend<span class="w"> </span>.
+<span class="o">[</span>+<span class="o">]</span><span class="w"> </span>Building<span class="w"> </span><span class="m">51</span>.1s<span class="w"> </span><span class="o">(</span><span class="m">11</span>/11<span class="o">)</span><span class="w"> </span><span class="nv">FINISHED</span>
+<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="o">[</span>internal<span class="o">]</span><span class="w"> </span>load<span class="w"> </span>build<span class="w"> </span>definition<span class="w"> </span>from<span class="w"> </span>Dockerfile<span class="w">                                                                      </span><span class="m">0</span>.1s
+<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>transferring<span class="w"> </span>dockerfile:<span class="w"> </span>155B<span class="w">                                                                                      </span><span class="m">0</span>.0s
+<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="o">[</span>internal<span class="o">]</span><span class="w"> </span>load<span class="w"> </span>.dockerignore<span class="w">                                                                                         </span><span class="m">0</span>.0s
+<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>transferring<span class="w"> </span>context:<span class="w"> </span>66B<span class="w">                                                                                          </span><span class="m">0</span>.0s
+<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="o">[</span>internal<span class="o">]</span><span class="w"> </span>load<span class="w"> </span>metadata<span class="w"> </span><span class="k">for</span><span class="w"> </span>docker.io/library/node:latest<span class="w">                                                            </span><span class="m">2</span>.1s
+<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="o">[</span>auth<span class="o">]</span><span class="w"> </span>library/node:pull<span class="w"> </span>token<span class="w"> </span><span class="k">for</span><span class="w"> </span>registry-1.docker.io<span class="w">                                                               </span><span class="m">0</span>.0s
+<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="o">[</span>internal<span class="o">]</span><span class="w"> </span>load<span class="w"> </span>build<span class="w"> </span>context<span class="w">                                                                                         </span><span class="m">0</span>.1s
+<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>transferring<span class="w"> </span>context:<span class="w"> </span><span class="m">30</span>.39kB<span class="w">                                                                                      </span><span class="m">0</span>.0s<span class="w"> </span>
+<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="o">[</span><span class="m">1</span>/5<span class="o">]</span><span class="w"> </span>FROM<span class="w"> </span>docker.io/library/node@sha256:8a45c95c328809e7e10e8c9ed5bf8374620d62e52de1df7ef8e71a9596ec8676<span class="w">            </span><span class="m">30</span>.5s<span class="w"> </span>
+<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="nv">resolve</span><span class="w"> </span>
+<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>extracting<span class="w"> </span>sha256:8471b75885efc7790a16be5328e3b368567b76a60fc3feabd6869c15e175ee05<span class="w">                                 </span><span class="m">4</span>.7s<span class="w"> </span>
+......<span class="w"> </span>Multiple<span class="w"> </span>lines<span class="w"> </span>of<span class="w"> </span>progress......
+<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>extracting<span class="w"> </span>sha256:b51256989aaaa6444b004b6f1dc3753c7c5a0f2132187622ee395e1327c36061<span class="w">                                 </span><span class="m">0</span>.0s<span class="w"> </span>
+<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="o">[</span><span class="m">2</span>/5<span class="o">]</span><span class="w"> </span>WORKDIR<span class="w"> </span>/usr/src/app<span class="w">                                                                                            </span><span class="m">0</span>.5s<span class="w"> </span>
+<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="o">[</span><span class="m">3</span>/5<span class="o">]</span><span class="w"> </span>COPY<span class="w"> </span>package*.json<span class="w"> </span>./<span class="w">                                                                                           </span><span class="m">0</span>.0s<span class="w"> </span>
+<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="o">[</span><span class="m">4</span>/5<span class="o">]</span><span class="w"> </span>RUN<span class="w"> </span>npm<span class="w"> </span>install<span class="w">                                                                                                </span><span class="m">16</span>.4s<span class="w"> </span>
+<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="o">[</span><span class="m">5</span>/5<span class="o">]</span><span class="w"> </span>COPY<span class="w"> </span>.<span class="w"> </span>.<span class="w">                                                                                                        </span><span class="m">0</span>.0s<span class="w"> </span>
+<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>exporting<span class="w"> </span>to<span class="w"> </span>image<span class="w">                                                                                                    </span><span class="m">1</span>.4s<span class="w"> </span>
+<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>exporting<span class="w"> </span>layers<span class="w">                                                                                                   </span><span class="m">1</span>.4s<span class="w"> </span>
+<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>writing<span class="w"> </span>image<span class="w"> </span>sha256:27a88271fc4f9634fe0a96e8e79ad533303f454f01966daa78fa5562931c4760<span class="w">                              </span><span class="m">0</span>.0s<span class="w"> </span>
+<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>naming<span class="w"> </span>to<span class="w"> </span>docker.io/library/simplebackend<span class="w">                                                                          </span><span class="m">0</span>.0s<span class="w"> </span>
+
+Use<span class="w"> </span><span class="s1">'docker scan'</span><span class="w"> </span>to<span class="w"> </span>run<span class="w"> </span>Snyk<span class="w"> </span>tests<span class="w"> </span>against<span class="w"> </span>images<span class="w"> </span>to<span class="w"> </span>find<span class="w"> </span>vulnerabilities<span class="w"> </span>and<span class="w"> </span>learn<span class="w"> </span>how<span class="w"> </span>to<span class="w"> </span>fix<span class="w"> </span>them
+PS<span class="w"> </span>C:<span class="se">\U</span>sers<span class="se">\a</span>bhis<span class="se">\P</span>rojects<span class="se">\d</span>ocker_poc&gt;
+</code></pre></div></td></tr></table></div></li>
+<li><strong>Step 3</strong> - Run the following docker command to check the image built locally- 
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code>PS<span class="w"> </span>C:<span class="se">\U</span>sers<span class="se">\a</span>bhis<span class="se">\P</span>rojects<span class="se">\d</span>ocker_poc&gt;<span class="w"> </span>docker<span class="w"> </span>images
+REPOSITORY<span class="w">      </span>TAG<span class="w">       </span>IMAGE<span class="w"> </span>ID<span class="w">       </span>CREATED<span class="w">         </span>SIZE
+simplebackend<span class="w">   </span>latest<span class="w">    </span>27a88271fc4f<span class="w">   </span><span class="m">6</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">   </span><span class="m">1</span>.05GB
+alpine/git<span class="w">      </span>latest<span class="w">    </span>692618a0d74d<span class="w">   </span><span class="m">2</span><span class="w"> </span>weeks<span class="w"> </span>ago<span class="w">     </span><span class="m">43</span>.4MB
+</code></pre></div></td></tr></table></div></li>
+<li><strong>Step 4</strong> - Run the following docker command to instantiate container based on the image that you just created in the previous step-<ul>
+<li>Mention about the port using -p and bind the container port to the local machine/VM port as show in the command below.</li>
+<li>Refer to the image using the tag that you assigned during the build process.
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span></pre></div></td><td class="code"><div><pre><span></span><code>PS<span class="w"> </span>C:<span class="se">\U</span>sers<span class="se">\a</span>bhis<span class="se">\P</span>rojects<span class="se">\d</span>ocker_poc&gt;<span class="w"> </span>docker<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span><span class="m">4000</span>:4000<span class="w"> </span>simplebackend
+
+&gt;<span class="w"> </span>backend@1.0.0<span class="w"> </span>start
+&gt;<span class="w"> </span>nodemon<span class="w"> </span>--exec<span class="w"> </span>babel-node<span class="w"> </span>index.js
+
+<span class="o">[</span>nodemon<span class="o">]</span><span class="w"> </span><span class="m">2</span>.0.19
+<span class="o">[</span>nodemon<span class="o">]</span><span class="w"> </span>to<span class="w"> </span>restart<span class="w"> </span>at<span class="w"> </span>any<span class="w"> </span>time,<span class="w"> </span>enter<span class="w"> </span><span class="sb">`</span>rs<span class="sb">`</span>
+<span class="o">[</span>nodemon<span class="o">]</span><span class="w"> </span>watching<span class="w"> </span>path<span class="o">(</span>s<span class="o">)</span>:<span class="w"> </span>*.*
+<span class="o">[</span>nodemon<span class="o">]</span><span class="w"> </span>watching<span class="w"> </span>extensions:<span class="w"> </span>js,mjs,json
+<span class="o">[</span>nodemon<span class="o">]</span><span class="w"> </span>starting<span class="w"> </span><span class="sb">`</span>babel-node<span class="w"> </span>index.js<span class="sb">`</span>
+Your<span class="w"> </span>server<span class="w"> </span>is<span class="w"> </span>running<span class="w"> </span>on<span class="w"> </span>PORT:<span class="w"> </span><span class="m">4000</span>
+</code></pre></div></td></tr></table></div></li>
+</ul>
+</li>
+<li><strong>Step 5</strong> - Run the following docker command to check if the container is up and running as a service<ul>
+<li>The container running can also be checked from the docker desktop as well as the number of images that have been created.</li>
+<li>Make sure that the container that you are running you shut down using the <mark>stop command</mark></li>
+<li>Also, keep a check on the number of images that have been created. These images general run into 1-2 GBs and will very quickly eat up your local disk space.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><code>PS<span class="w"> </span>C:<span class="se">\U</span>sers<span class="se">\a</span>bhis<span class="se">\P</span>rojects<span class="se">\d</span>ocker_poc&gt;<span class="w"> </span>docker<span class="w"> </span>ps
+CONTAINER<span class="w"> </span>ID<span class="w">   </span>IMAGE<span class="w">           </span>COMMAND<span class="w">                  </span>CREATED<span class="w">          </span>STATUS<span class="w">          </span>PORTS<span class="w">                    </span>NAMES
+cd637f86b4a8<span class="w">   </span>simplebackend<span class="w">   </span><span class="s2">"docker-entrypoint.s…"</span><span class="w">   </span><span class="m">33</span><span class="w"> </span>seconds<span class="w"> </span>ago<span class="w">   </span>Up<span class="w"> </span><span class="m">32</span><span class="w"> </span>seconds<span class="w">   </span><span class="m">0</span>.0.0.0:4000-&gt;4000/tcp<span class="w">   </span>great_heyrovsky
+PS<span class="w"> </span>C:<span class="se">\U</span>sers<span class="se">\a</span>bhis<span class="se">\P</span>rojects<span class="se">\d</span>ocker_poc&gt;<span class="w"> </span>
+PS<span class="w"> </span>C:<span class="se">\U</span>sers<span class="se">\a</span>bhis<span class="se">\P</span>rojects<span class="se">\d</span>ocker_poc&gt;<span class="w"> </span>docker<span class="w"> </span>stop<span class="w"> </span>cd637
+cd637
+</code></pre></div></td></tr></table></div>
+<ul>
+<li>For running a full stack that comprise of frontend , backend, and a database consists of spinning up multiple containers that often form a stack. These containers can be combined to create a service that can be built suing <mark>docker compose</mark></li>
+<li>To look at how to setup a multi-container based full stack service look at the notes <a href="../Docker%20Compose/">Docker Compose</a></li>
+<li>To develop a CI pipeline from Github project using Travis CI app refer to the notes on <a href="../CI%20with%20Travis/">CI with Travis</a><ul>
+<li>This takes it to full circle where once the code is developed, tested locally, and committed to the git repo in Github a continuous integration tool such as Travis can be used for continuous build that gets triggered for each commit to compile the code and push the image into a remote repository such as docker hub.</li>
+</ul>
+</li>
+</ul>
+<hr/>
+<ul>
+<li>These notes are based on my understanding of the topic. Some of the content and images refers to the online articles, learning courses I attended. I encourage you to lookup the links provided to develop your own understanding of it at deeper level.</li>
+<li>The intention of these notes is to serve as reference marker to other sites, online courses, books that I found useful while learning about it.</li>
+<li>If you would like to share any thoughts or give comments please feel free to reach me @ <a href="mailto:abhishekgupta86@gmail.com">abhishekgupta86@gmail.com</a> or @ <a href="http://www.linkedin.com/in/abhishekgupta86">www.linkedin.com/in/abhishekgupta86</a></li>
+</ul>
+<hr/></div>
+<aside class="md-source-file">
+<span class="md-source-file__fact">
+<span class="md-icon" title="Last update">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"></path></svg>
+</span>
+<span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">May 18, 2024</span>
+</span>
+</aside>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      Copyright © 2024 abhishekgupta
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.top", "navigation.tabs", "navigation.expand", "search.share", "content.tabs.link"], "search": "../../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+<script src="../../../assets/javascripts/bundle.a7c05c9e.min.js"></script>
+<script src="../../../javascripts/mathjax.js"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+<script src="../../../javascript/insights.js"></script>
+</body>
+</html>
